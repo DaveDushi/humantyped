@@ -12,6 +12,7 @@ pub fn Shell(title: &'static str, children: Children) -> impl IntoView {
                 <meta property="og:title" content="HumanTyped — Prove Your Posts Are Human" />
                 <meta property="og:description" content="Keystroke biometric verification for social media. Prove you typed it yourself." />
                 <meta property="og:type" content="website" />
+                <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
                 <link rel="stylesheet" href="/styles.css" />
                 <title>{title}</title>
             </head>
