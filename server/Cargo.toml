@@ -1,0 +1,18 @@
+[package]
+name = "humantyped-server"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "humantyped-server"
+path = "src/main.rs"
+
+[dependencies]
+axum = "0.8"
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "time"] }
+tower-http = { version = "0.6", features = ["cors", "fs"] }
+leptos = { version = "0.7", features = ["ssr"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+rusqlite = { version = "0.32", features = ["bundled"] }
+tokio-rusqlite = "0.6"

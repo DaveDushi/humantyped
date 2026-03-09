@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="popup.css">
+  <title>HumanTyped</title>
+</head>
+<body>
+  <div class="popup">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon">H</div>
+        <span class="logo-text">Human<span class="accent">Typed</span></span>
+      </div>
+    </header>
+
+    <!-- Session Stats -->
+    <section class="card">
+      <h3 class="card-title">Current Session</h3>
+      <div class="stats-grid">
+        <div class="stat">
+          <span class="stat-value" id="charCount">0</span>
+          <span class="stat-label">Characters</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="wpmAverage">0</span>
+          <span class="stat-label">WPM</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="correctionRate">0%</span>
+          <span class="stat-label">Corrections</span>
+        </div>
+        <div class="stat">
+          <span class="stat-value" id="confidenceScore">—</span>
+          <span class="stat-label">Confidence</span>
+        </div>
+      </div>
+      <!-- Confidence Bar -->
+      <div class="confidence-bar-wrap">
+        <div class="confidence-bar">
+          <div class="confidence-fill" id="confidenceFill"></div>
+        </div>
+      </div>
+      <!-- Trust Indicator -->
+      <div class="trust-row">
+        <div class="trust-dot" id="trustDot"></div>
+        <span class="trust-text" id="trustText">No active session</span>
+      </div>
+    </section>
+
+    <!-- Token History -->
+    <section class="card">
+      <h3 class="card-title">Recent Certifications</h3>
+      <div id="tokenList" class="token-list">
+        <p class="empty-text">No certifications yet</p>
+      </div>
+    </section>
+
+    <!-- Toggles -->
+    <section class="card toggles">
+      <label class="toggle-row">
+        <span class="toggle-label">Enable on this site</span>
+        <input type="checkbox" id="siteToggle" checked>
+        <span class="toggle-slider"></span>
+      </label>
+      <label class="toggle-row">
+        <span class="toggle-label">Highlight verified posts</span>
+        <input type="checkbox" id="scannerToggle">
+        <span class="toggle-slider"></span>
+      </label>
+    </section>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

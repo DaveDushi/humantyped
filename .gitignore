@@ -1,0 +1,20 @@
+# Rust
+server/target/
+**/*.rs.bk
+
+# SQLite
+*.db
+*.db-wal
+*.db-shm
+
+# Node (Tailwind)
+server/node_modules/
+server/package-lock.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.*
