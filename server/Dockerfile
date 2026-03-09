@@ -23,5 +23,6 @@ RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/
 WORKDIR /app
 COPY --from=builder /app/target/release/humantyped-server .
 COPY --from=css /app/static ./static
+COPY static/favicon.svg ./static/
 EXPOSE 3000
 CMD ["./humantyped-server"]
