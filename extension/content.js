@@ -1,14 +1,6 @@
 (() => {
   "use strict";
 
-  const LOG = "[HumanTyped]";
-
-  function log(...args) {
-    console.log(LOG, ...args);
-  }
-
-  log("Content script loaded:", location.hostname, location.href);
-
   // ─── Hidden element for communication with inject.js ────────────
   // inject.js runs in MAIN world (page context) via manifest.
   // We share data through a hidden DOM element.
@@ -24,7 +16,6 @@
       if (m.attributeName === "data-sent") {
         const token = dataEl.getAttribute("data-sent");
         if (token) {
-          log("Token confirmed in tweet request:", token);
           dataEl.removeAttribute("data-sent");
           dataEl.removeAttribute("data-payload");
           resetSession();
@@ -102,7 +93,6 @@
       e.preventDefault();
       e.stopPropagation();
       showTooltip("Paste disabled — HumanTyped requires manual typing");
-      log("Blocked paste");
     }
   }, true);
 
@@ -110,7 +100,6 @@
     if (e.dataTransfer && e.dataTransfer.types.includes("text/plain") && getComposeBox(e.target)) {
       e.preventDefault();
       e.stopPropagation();
-      log("Blocked drop");
     }
   }, true);
 
@@ -119,7 +108,6 @@
     if ((e.inputType === "insertFromPaste" || e.inputType === "insertFromDrop") && getComposeBox(e.target)) {
       e.preventDefault();
       e.stopPropagation();
-      log("Blocked beforeinput paste/drop");
     }
   }, true);
 
@@ -135,7 +123,6 @@
     if ((e.ctrlKey || e.metaKey) && e.key === "v") {
       e.preventDefault();
       showTooltip("Paste disabled — HumanTyped requires manual typing");
-      log("Blocked Ctrl+V");
       return;
     }
 
@@ -144,7 +131,6 @@
     if (!session.start) {
       session.start = now;
       session.lastSampleTime = now;
-      log("Session started — compose box detected");
     }
 
     session.activeComposeBox = composeBox;
@@ -300,7 +286,6 @@
 
     allowOwnPaste = false;
     dt.clearData();
-    log("Paste event dispatched");
   }
 
   // ─── Post Button Interception ────────────────────────────────────
@@ -322,14 +307,7 @@
     if (!button) return;
     if (certifying) return;
 
-    log("Post button click!", {
-      charCount: session.charCount,
-      totalKeys: session.totalKeys,
-      testId: button.getAttribute("data-testid"),
-    });
-
     if (session.charCount < 5) {
-      log("Skipping — not enough characters (need >= 5, have " + session.charCount + ")");
       return;
     }
 
@@ -340,7 +318,6 @@
     certifying = true;
 
     const token = generateToken();
-    log("Generated token:", token);
 
     const metrics = {
       token,
@@ -357,27 +334,20 @@
     const composeBox = session.activeComposeBox || findAnyComposeBox();
     if (composeBox) {
       insertViaPaste(composeBox, "\n\n" + verifyUrl);
-    } else {
-      log("WARNING: No compose box found for paste insertion");
     }
 
     // Send certification to server
     try {
       chrome.runtime.sendMessage(
         { type: "CERTIFY_POST", data: metrics },
-        (response) => {
-          log("Certification response:", response);
-        }
+        () => {}
       );
-    } catch (err) {
-      log("sendMessage error:", err);
-    }
+    } catch (_) {}
 
     // Wait for paste to propagate through Draft.js, then re-click.
     // IMPORTANT: certifying stays true during re-click so our handler
     // skips it. We reset AFTER button.click() returns (synchronous).
     setTimeout(() => {
-      log("Re-clicking Post button");
       button.click();
       certifying = false;
       resetSession();
@@ -422,7 +392,6 @@
         parent.style.position = "relative";
       }
       parent.appendChild(badge);
-      log("Badge injected");
     }
   }
 
@@ -490,31 +459,23 @@
     try {
       chrome.storage.local.get({ disabledSites: [] }, (result) => {
         if (chrome.runtime.lastError) {
-          log("Storage error:", chrome.runtime.lastError.message);
           startMonitoring();
           return;
         }
         if (result.disabledSites.includes(location.hostname)) {
-          log("Disabled for", location.hostname);
           return;
         }
         startMonitoring();
       });
-    } catch (err) {
-      log("Init error, starting anyway:", err.message);
+    } catch (_) {
       startMonitoring();
     }
   }
 
   function startMonitoring() {
-    log("Monitoring active on", location.hostname);
-
     const box = findAnyComposeBox();
     if (box) {
       injectBadge(box);
-      log("Compose box found on init");
-    } else {
-      log("No compose box yet — waiting for MutationObserver");
     }
 
     observer.observe(document.body || document.documentElement, {
@@ -528,24 +489,11 @@
           if (msg.data.disabledSites.includes(location.hostname)) {
             observer.disconnect();
             document.querySelectorAll(".humantyped-badge").forEach((b) => b.remove());
-            log("Disabled via settings");
           }
         }
       });
     } catch (_) {}
   }
-
-  // Debug: periodic session state log
-  setInterval(() => {
-    if (session.charCount > 0) {
-      log("Session:", {
-        chars: session.charCount,
-        keys: session.totalKeys,
-        wpm: Math.round(getWpmAverage()),
-        confidence: getConfidenceScore(),
-      });
-    }
-  }, 10000);
 
   init();
 })();
