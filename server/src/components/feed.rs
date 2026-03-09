@@ -30,12 +30,15 @@ pub fn FeedPage(tokens: Vec<TokenRecord>, total: i64) -> impl IntoView {
                 <div class="space-y-3">
                     {tokens.into_iter().map(|t| {
                         let confidence = t.confidence_score;
-                        let color = if confidence >= 80.0 { "text-emerald-400" }
-                                    else if confidence >= 50.0 { "text-yellow-400" }
+                        let color = if confidence >= 70.0 { "text-emerald-400" }
+                                    else if confidence >= 40.0 { "text-yellow-400" }
                                     else { "text-red-400" };
-                        let bar_color = if confidence >= 80.0 { "bg-emerald-500" }
-                                        else if confidence >= 50.0 { "bg-yellow-500" }
+                        let bar_color = if confidence >= 70.0 { "bg-emerald-500" }
+                                        else if confidence >= 40.0 { "bg-yellow-500" }
                                         else { "bg-red-500" };
+                        let status_icon = if confidence >= 70.0 { "✅" }
+                                          else if confidence >= 40.0 { "⚠\u{fe0f}" }
+                                          else { "❌" };
                         let duration_s = t.session_duration_ms as f64 / 1000.0;
                         let duration = if duration_s >= 60.0 {
                             format!("{:.1}m", duration_s / 60.0)
@@ -50,7 +53,7 @@ pub fn FeedPage(tokens: Vec<TokenRecord>, total: i64) -> impl IntoView {
                             >
                                 <div class="flex items-center justify-between mb-3">
                                     <div class="flex items-center gap-3">
-                                        <span class="text-lg">"✅"</span>
+                                        <span class="text-lg">{status_icon}</span>
                                         <span class="font-mono text-sm text-neutral-300 group-hover:text-white transition-colors">
                                             {t.token.clone()}
                                         </span>

@@ -32,22 +32,32 @@ fn VerifiedCard(record: TokenRecord) -> impl IntoView {
     };
     let corrections = (record.correction_rate * record.character_count as f64).round() as i64;
     let confidence = record.confidence_score;
-    let confidence_color = if confidence >= 80.0 {
+    let confidence_color = if confidence >= 70.0 {
         "from-emerald-500 to-emerald-400"
-    } else if confidence >= 50.0 {
+    } else if confidence >= 40.0 {
         "from-yellow-500 to-yellow-400"
     } else {
         "from-red-500 to-red-400"
     };
+
+    // Pass/fail/suspicious based on score
+    let (banner_bg, banner_border, icon, title, title_color) = if confidence >= 70.0 {
+        ("bg-emerald-500/10", "border-emerald-500/20", "✅", "Human Verified", "text-emerald-400")
+    } else if confidence >= 40.0 {
+        ("bg-yellow-500/10", "border-yellow-500/20", "⚠\u{fe0f}", "Suspicious Typing Pattern", "text-yellow-400")
+    } else {
+        ("bg-red-500/10", "border-red-500/20", "❌", "Likely Not Human", "text-red-400")
+    };
+
     let token = record.token.clone();
     let created_at = record.created_at.clone();
 
     view! {
         <div class="rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden shadow-2xl">
             // Status banner
-            <div class="bg-emerald-500/10 border-b border-emerald-500/20 px-8 py-6 text-center">
-                <div class="text-5xl mb-3">"✅"</div>
-                <h1 class="text-2xl font-bold text-emerald-400">"Human Verified"</h1>
+            <div class={format!("{banner_bg} border-b {banner_border} px-8 py-6 text-center")}>
+                <div class="text-5xl mb-3">{icon}</div>
+                <h1 class={format!("text-2xl font-bold {title_color}")}>{title}</h1>
                 <p class="text-sm text-neutral-400 mt-1 font-mono">{token}</p>
             </div>
 

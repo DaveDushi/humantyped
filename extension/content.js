@@ -226,11 +226,31 @@
 
   function getConfidenceScore() {
     let score = 100;
-    if (getWpmVariance() < 5 && session.wpmSamples.length >= 2) score -= 30;
+
+    // Robotic WPM consistency (humans vary naturally)
+    if (session.wpmSamples.length >= 2 && getWpmVariance() < 5) score -= 35;
+
+    // Superhuman typing speed
     if (getWpmAverage() > 150) score -= 25;
-    if (getCorrectionRate() === 0 && session.charCount > 50) score -= 20;
+
+    // Zero corrections is a huge red flag for any real typing
+    if (getCorrectionRate() === 0 && session.charCount > 30) score -= 30;
+
+    // Session too fast for character count
     if (getSessionDurationMs() < session.charCount * 30) score -= 25;
-    if (getFlightTimeStdDev() < 10 && session.flightTimes.length >= 10) score -= 20;
+
+    // Robotic inter-key timing (browser automation adds ~20-50ms random delays)
+    if (session.flightTimes.length >= 10 && getFlightTimeStdDev() < 30) score -= 25;
+
+    // Perfectly uniform flight times (coefficient of variation < 15%)
+    if (session.flightTimes.length >= 10) {
+      const mean = session.flightTimes.reduce((a, b) => a + b, 0) / session.flightTimes.length;
+      if (mean > 0 && getFlightTimeStdDev() / mean < 0.15) score -= 20;
+    }
+
+    // No WPM samples at all on a long session is suspicious (session tracking issues)
+    if (session.wpmSamples.length < 2 && session.charCount > 50 && getSessionDurationMs() > 15000) score -= 15;
+
     return Math.max(0, Math.min(100, score));
   }
 
