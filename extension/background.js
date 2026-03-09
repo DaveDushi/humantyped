@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:3000";
+const API_BASE = "https://humantyped.fly.dev";
 
 // In-memory session stats from the active content script
 let currentSession = null;

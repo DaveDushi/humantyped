@@ -8,6 +8,7 @@
     "https://twitter.com/*",
     "https://x.com/*",
     "https://humantyped.com/*",
+    "https://humantyped.fly.dev/*",
     "http://localhost:3000/*"
   ],
   "background": {

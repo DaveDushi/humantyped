@@ -1,0 +1,5 @@
+/target
+humantyped.db
+humantyped.db-wal
+humantyped.db-shm
+node_modules/

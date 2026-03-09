@@ -1,10 +1,10 @@
 (() => {
   "use strict";
 
-  const API_BASE = "http://localhost:3000";
-  const VERIFY_BASE = "http://localhost:3000/verify";
+  const API_BASE = "https://humantyped.fly.dev";
+  const VERIFY_BASE = "https://humantyped.fly.dev/verify";
   const TOKEN_REGEX =
-    /(?:\[HumanTyped:\s*([A-Za-z0-9]{12})(?:\s*—\s*unverified)?\]|humantyped\.com\/verify\/([A-Za-z0-9]{12}))/g;
+    /(?:\[HumanTyped:\s*([A-Za-z0-9]{12})(?:\s*—\s*unverified)?\]|humantyped\.fly\.dev\/verify\/([A-Za-z0-9]{12}))/g;
   const TWEET_TEXT_SELECTOR = '[data-testid="tweetText"]';
   const SCANNED_ATTR = "data-humantyped-scanned";
 

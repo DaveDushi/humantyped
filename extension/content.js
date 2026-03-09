@@ -333,7 +333,7 @@
     };
 
     // Paste-insert a clickable verification URL into compose box
-    const verifyUrl = "humantyped.com/verify/" + token;
+    const verifyUrl = "humantyped.fly.dev/verify/" + token;
     const composeBox = session.activeComposeBox || findAnyComposeBox();
     if (composeBox) {
       insertViaPaste(composeBox, "\n\n" + verifyUrl);

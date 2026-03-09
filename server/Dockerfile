@@ -1,13 +1,15 @@
 # Stage 1: Build Tailwind CSS
 FROM node:22-slim AS css
 WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
 COPY tailwind.config.js ./
 COPY style/ ./style/
 COPY src/ ./src/
 RUN npx tailwindcss -i style/input.css -o static/styles.css --minify
 
 # Stage 2: Build Rust binary
-FROM rust:1.85-slim AS builder
+FROM rust:1.88-slim AS builder
 WORKDIR /app
 COPY Cargo.toml Cargo.lock ./
 # Create dummy main for dependency caching
