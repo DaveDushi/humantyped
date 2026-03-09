@@ -40,25 +40,52 @@ fn VerifiedCard(record: TokenRecord) -> impl IntoView {
         "from-red-500 to-red-400"
     };
 
-    // Pass/fail/suspicious based on score
-    let (banner_bg, banner_border, icon, title, title_color) = if confidence >= 70.0 {
-        ("bg-emerald-500/10", "border-emerald-500/20", "✅", "Human Verified", "text-emerald-400")
+    let (banner_bg, banner_border, title, title_color, icon_color, icon_bg, icon_border) = if confidence >= 70.0 {
+        ("bg-emerald-500/10", "border-emerald-500/20", "Human Verified", "text-emerald-400", "text-emerald-400", "bg-emerald-500/10", "border-emerald-500/30")
     } else if confidence >= 40.0 {
-        ("bg-yellow-500/10", "border-yellow-500/20", "⚠\u{fe0f}", "Suspicious Typing Pattern", "text-yellow-400")
+        ("bg-yellow-500/10", "border-yellow-500/20", "Suspicious Typing Pattern", "text-yellow-400", "text-yellow-400", "bg-yellow-500/10", "border-yellow-500/30")
     } else {
-        ("bg-red-500/10", "border-red-500/20", "❌", "Likely Not Human", "text-red-400")
+        ("bg-red-500/10", "border-red-500/20", "Likely Not Human", "text-red-400", "text-red-400", "bg-red-500/10", "border-red-500/30")
     };
+
+    let is_pass = confidence >= 70.0;
+    let is_warning = confidence >= 40.0 && confidence < 70.0;
 
     let token = record.token.clone();
     let created_at = record.created_at.clone();
 
     view! {
         <div class="rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden shadow-2xl">
+            // Amber accent bar
+            <div class="h-1 bg-gradient-to-r from-amber-400 to-orange-400"></div>
+
             // Status banner
-            <div class={format!("{banner_bg} border-b {banner_border} px-8 py-6 text-center")}>
-                <div class="text-5xl mb-3">{icon}</div>
-                <h1 class={format!("text-2xl font-bold {title_color}")}>{title}</h1>
-                <p class="text-sm text-neutral-400 mt-1 font-mono">{token}</p>
+            <div class={format!("{banner_bg} border-b {banner_border} px-8 py-6 flex items-center gap-4")}>
+                <div class={format!("w-12 h-12 rounded-full {icon_bg} border-2 {icon_border} flex items-center justify-center flex-shrink-0")}>
+                    {if is_pass {
+                        view! {
+                            <svg class={format!("w-6 h-6 {icon_color}")} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                            </svg>
+                        }.into_any()
+                    } else if is_warning {
+                        view! {
+                            <svg class={format!("w-6 h-6 {icon_color}")} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                            </svg>
+                        }.into_any()
+                    } else {
+                        view! {
+                            <svg class={format!("w-6 h-6 {icon_color}")} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        }.into_any()
+                    }}
+                </div>
+                <div>
+                    <h1 class={format!("text-2xl font-bold {title_color}")}>{title}</h1>
+                    <p class="text-xs text-neutral-500 font-mono tracking-wider mt-1">{token}</p>
+                </div>
             </div>
 
             // Stats
@@ -75,16 +102,16 @@ fn VerifiedCard(record: TokenRecord) -> impl IntoView {
 
                 // Metrics grid
                 <div class="grid grid-cols-2 gap-4">
-                    <MetricCard label="Avg WPM" value=format!("{:.0}", record.wpm_average) />
-                    <MetricCard label="WPM Variance" value=format!("{:.1}", record.wpm_variance) />
-                    <MetricCard label="Correction Rate" value=format!("{:.1}%", record.correction_rate * 100.0) />
-                    <MetricCard label="Characters" value=record.character_count.to_string() />
+                    <MetricCard label="AVG WPM" value=format!("{:.0}", record.wpm_average) />
+                    <MetricCard label="WPM VARIANCE" value=format!("{:.1}", record.wpm_variance) />
+                    <MetricCard label="CORRECTION RATE" value=format!("{:.1}%", record.correction_rate * 100.0) />
+                    <MetricCard label="CHARACTERS" value=record.character_count.to_string() />
                 </div>
 
                 // Confidence meter
                 <div>
                     <div class="flex items-center justify-between text-xs text-neutral-500 mb-2">
-                        <span>"Human Confidence"</span>
+                        <span class="uppercase tracking-wider font-medium">"Human Confidence"</span>
                         <span class="text-white font-semibold">{format!("{:.0}%", confidence)}</span>
                     </div>
                     <div class="h-3 rounded-full bg-neutral-800 overflow-hidden">
@@ -113,8 +140,8 @@ fn VerifiedCard(record: TokenRecord) -> impl IntoView {
                     "No identity is tracked, no keystrokes are stored. Just proof of humanity."
                 </p>
                 <a
-                    href="/"
-                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-emerald-500 hover:bg-emerald-400 text-neutral-950 text-sm font-semibold transition-colors"
+                    href="/#install"
+                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-amber-400 hover:bg-amber-300 text-neutral-950 text-sm font-semibold transition-colors"
                 >
                     "Get the Extension"
                     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
@@ -129,22 +156,31 @@ fn VerifiedCard(record: TokenRecord) -> impl IntoView {
 #[component]
 fn NotFoundCard() -> impl IntoView {
     view! {
-        <div class="rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden shadow-2xl text-center">
-            <div class="bg-red-500/10 border-b border-red-500/20 px-8 py-6">
-                <div class="text-5xl mb-3">"❌"</div>
-                <h1 class="text-2xl font-bold text-red-400">"Token Not Found"</h1>
-            </div>
-            <div class="px-8 py-8">
-                <p class="text-neutral-400 text-sm leading-relaxed mb-6">
-                    "This verification token does not exist in our records. "
-                    "It may be invalid, misspelled, or from a post that was not certified with HumanTyped."
-                </p>
-                <a
-                    href="/"
-                    class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-neutral-700 hover:border-neutral-600 text-neutral-300 text-sm font-medium transition-colors"
-                >
-                    "Back to HumanTyped"
-                </a>
+        <div class="rounded-2xl bg-neutral-900 border border-neutral-800 overflow-hidden shadow-2xl">
+            // Amber accent bar
+            <div class="h-1 bg-gradient-to-r from-amber-400 to-orange-400"></div>
+
+            <div class="text-center">
+                <div class="bg-red-500/10 border-b border-red-500/20 px-8 py-6 flex items-center justify-center gap-4">
+                    <div class="w-12 h-12 rounded-full bg-red-500/10 border-2 border-red-500/30 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </div>
+                    <h1 class="text-2xl font-bold text-red-400">"Token Not Found"</h1>
+                </div>
+                <div class="px-8 py-8">
+                    <p class="text-neutral-400 text-sm leading-relaxed mb-6">
+                        "This verification token does not exist in our records. "
+                        "It may be invalid, misspelled, or from a post that was not certified with HumanTyped."
+                    </p>
+                    <a
+                        href="/"
+                        class="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg border border-neutral-700 hover:border-neutral-600 text-neutral-300 text-sm font-medium transition-colors"
+                    >
+                        "Back to HumanTyped"
+                    </a>
+                </div>
             </div>
         </div>
     }
@@ -154,8 +190,8 @@ fn NotFoundCard() -> impl IntoView {
 fn MetricCard(label: &'static str, value: String) -> impl IntoView {
     view! {
         <div class="p-3 rounded-lg bg-neutral-800/50 border border-neutral-800/50">
-            <p class="text-lg font-bold text-white">{value}</p>
-            <p class="text-xs text-neutral-500">{label}</p>
+            <p class="text-xs text-neutral-500 uppercase tracking-wider font-medium">{label}</p>
+            <p class="text-lg font-bold text-white mt-1">{value}</p>
         </div>
     }
 }

@@ -7,8 +7,11 @@ pub fn Shell(title: &'static str, children: Children) -> impl IntoView {
             <head>
                 <meta charset="utf-8" />
                 <meta name="viewport" content="width=device-width, initial-scale=1" />
-                <meta name="description" content="Certify your social media posts were genuinely typed by a human. Keystroke biometric analysis with public verification." />
+                <meta name="description" content="Prove your social media posts were genuinely typed by a human. Keystroke biometric analysis with public verification. Free, open source, private." />
                 <meta name="theme-color" content="#0a0a0a" />
+                <meta property="og:title" content="HumanTyped — Prove Your Posts Are Human" />
+                <meta property="og:description" content="Keystroke biometric verification for social media. Prove you typed it yourself." />
+                <meta property="og:type" content="website" />
                 <link rel="stylesheet" href="/styles.css" />
                 <title>{title}</title>
             </head>
