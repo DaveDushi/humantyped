@@ -330,10 +330,16 @@
     };
 
     // Paste-insert a clickable verification URL into compose box
-    const verifyUrl = "humantyped.fly.dev/verify/" + token;
+    const score = metrics.confidence_score;
+    let label;
+    if (score >= 70) label = "Typed by a human \u2713";
+    else if (score >= 40) label = "Possibly typed by a human \u26a0";
+    else label = "Not typed by a human \u2717";
+
+    const verifyText = label + " humantyped.fly.dev/v/" + token;
     const composeBox = session.activeComposeBox || findAnyComposeBox();
     if (composeBox) {
-      insertViaPaste(composeBox, "\n\n" + verifyUrl);
+      insertViaPaste(composeBox, "\n\n" + verifyText);
     }
 
     // Send certification to server

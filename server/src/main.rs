@@ -55,6 +55,7 @@ async fn main() {
         .route("/", get(pages::landing))
         .route("/feed", get(pages::feed))
         .route("/verify/{token}", get(pages::verify_page))
+        .route("/v/{token}", get(pages::verify_page))
         // Static files (CSS, etc.)
         .fallback_service(ServeDir::new("static"))
         .layer(CorsLayer::permissive())

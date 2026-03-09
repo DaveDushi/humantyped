@@ -2,9 +2,9 @@
   "use strict";
 
   const API_BASE = "https://humantyped.fly.dev";
-  const VERIFY_BASE = "https://humantyped.fly.dev/verify";
+  const VERIFY_BASE = "https://humantyped.fly.dev/v";
   const TOKEN_REGEX =
-    /(?:\[HumanTyped:\s*([A-Za-z0-9]{12})(?:\s*—\s*unverified)?\]|humantyped\.fly\.dev\/verify\/([A-Za-z0-9]{12}))/g;
+    /(?:\[HumanTyped:\s*([A-Za-z0-9]{12})(?:\s*—\s*unverified)?\]|humantyped\.fly\.dev\/(?:verify|v)\/([A-Za-z0-9]{12}))/g;
   const TWEET_TEXT_SELECTOR = '[data-testid="tweetText"]';
   const SCANNED_ATTR = "data-humantyped-scanned";
 

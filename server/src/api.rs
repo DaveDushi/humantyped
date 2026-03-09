@@ -82,7 +82,7 @@ pub async fn post_certify(
     match db::certify(&state.db, req).await {
         Ok(()) => Ok(Json(CertifyResponse {
             success: true,
-            verify_url: format!("/verify/{}", token),
+            verify_url: format!("/v/{}", token),
             token,
         })),
         Err(_) => Err((
